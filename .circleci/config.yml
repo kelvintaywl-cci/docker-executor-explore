@@ -12,7 +12,13 @@ executors:
         # docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.User"
         user: glue_user
     resource_class: large
-
+  glue-custom-entrypoint:
+    docker:
+      - image: docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01
+        # see image's configuration
+        # docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.Entrypoint"
+        entrypoint: "bash -lc"
+    resource_class: large
 jobs:
   path-check:
     parameters:
@@ -30,5 +36,5 @@ workflows:
           matrix:
             parameters:
               exec:
-                - glue-user-specified
+                - glue-custom-entrypoint
                 - glue-default

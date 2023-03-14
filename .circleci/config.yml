@@ -1,0 +1,34 @@
+version: 2.1
+
+executors:
+  glue-default:
+    docker:
+      - image: docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01
+    resource_class: large
+  glue-user-specified:
+    docker:
+      - image: docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01
+        # see image's configuration
+        # docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.User"
+        user: glue_user
+    resource_class: large
+
+jobs:
+  path-check:
+    parameters:
+      exec:
+        type: executor
+    executor: << parameters.exec >>
+    steps:
+      - run: whoami
+      - run: printenv PATH
+
+workflows:
+  main:
+    jobs:
+      - path-check:
+          matrix:
+            parameters:
+              exec:
+                - glue-user-specified
+                - glue-default

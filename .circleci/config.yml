@@ -49,7 +49,7 @@ executors:
   glue-custom-entrypoint:
     docker:
       - image: rhodeswebdev/cci-drupal-percy:v0.15
-        entrypoint: /usr/local/bin/docker-php-entrypoint
+        entrypoint: /usr/local/bin/docker-php-entrypoint sh
     resource_class: medium
 jobs:
   deps-check:

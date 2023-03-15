@@ -1,72 +1,33 @@
-# -- EXPLANATION NOTES
-
-# CircleCI executes commands in non-login and non-interactive shells.
-# However, docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 requires 
-# a login shell in order to load the right PATH env vars.
-
-# We can see the default PATH env var in the image:
-# $ docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.Env"
-# [
-#   "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-#   "LANG=en_US.UTF-8",
-#   "PYSPARK_PYTHON=python3",
-#   "SPARK_HOME=/home/glue_user/spark",
-#   "SPARK_CONF_DIR=/home/glue_user/spark/conf",
-#   "PYTHONPATH=/home/glue_user/aws-glue-libs/PyGlue.zip:/home/glue_user/spark/python/lib/py4j-0.10.7-src.zip:/home/glue_user/spark/python/",
-#   "PYSPARK_PYTHON_DRIVER=python3",
-#   "HADOOP_CONF_DIR=/home/glue_user/spark/conf"
-# ]
-
-# Importantly, we see the Docker image's entrypoint requires a login shell.
-# Notice the `-l` option in the entrypoint:
-# $ docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.Entrypoint"
-# [
-#   "bash",
-#   "-lc"
-# ]
-
-# This will log in as the glue_user:
-# $ docker inspect docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01 | jq ".[0].Config.User"
-# "glue_user"
-
-# CircleCI will override the entrypoint above too,
-# using `/bin/sh` by default.
-# Hence, the solution would be to override the execution environment's default shell command
-# to bash -l ...
-# See the glue-custom-shell executor below.
-
-# (Side: you can override entrypoint too.
-# However, CircleCI does not allow for entrypoints using login;
-# You will see a infrastructure failure in this case.
-
 version: 2.1
 
 executors:
-  glue-default:
+  linux:
+    machine: ubuntu-2204:2023.02.1
+  dock:
     docker:
       - image: rhodeswebdev/cci-drupal-percy:v0.15
-    resource_class: medium
-  glue-custom-entrypoint:
-    docker:
-      - image: rhodeswebdev/cci-drupal-percy:v0.15
-        entrypoint: /usr/local/bin/docker-php-entrypoint sh
-    resource_class: medium
+
 jobs:
-  deps-check:
+  php-check:
     parameters:
       exec:
         type: executor
     executor: << parameters.exec >>
     steps:
-      - checkout
-      - run: php --ini
+      - when:
+          condition:
+            equal: ["linux", << parameters.exec >>]
+          steps:
+            - run: sudo apt update && sudo apt install php php-xml php-mbstring php-gd php-curl
+      - run: php --version
+      - run: composer --version
 
 workflows:
   main:
     jobs:
-      - deps-check:
-          matrix:
-            parameters:
-              exec:
-                - glue-custom-entrypoint
-                - glue-default
+      php-check:
+        matrix:
+          parameters:
+            exec:
+              - linux
+              - dock

@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  php: circleci/php@1.1.0
+
 executors:
   linux:
     machine:
@@ -18,7 +21,8 @@ jobs:
   php-check-machine:
     executor: linux
     steps:
-      - run: sudo apt update && sudo apt install php php-xml php-mbstring php-gd php-curl
+      - run: sudo apt -y update && sudo apt -y install php php-xml php-mbstring php-gd php-curl
+      - php/install-composer
       - check-deps
   php-check-docker:
     executor: dock

@@ -44,29 +44,29 @@ version: 2.1
 executors:
   glue-default:
     docker:
-      - image: docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01
-    resource_class: large
-  glue-custom-shell:
+      - image: rhodeswebdev/cci-drupal-percy:v0.15
+    resource_class: medium
+  glue-custom-entrypoint:
     docker:
-      - image: docker.io/amazon/aws-glue-libs:glue_libs_2.0.0_image_01
-    resource_class: large
-    shell: bash -eo pipefail -l
+      - image: rhodeswebdev/cci-drupal-percy:v0.15
+        entrypoint: docker-php-entrypoint
+    resource_class: medium
 jobs:
-  path-check:
+  deps-check:
     parameters:
       exec:
         type: executor
     executor: << parameters.exec >>
     steps:
-      - run: whoami
-      - run: printenv PATH
+      - checkout
+      - run: php --ini
 
 workflows:
   main:
     jobs:
-      - path-check:
+      - deps-check:
           matrix:
             parameters:
               exec:
-                - glue-custom-shell  # will show desired PATH env var
-                - glue-default  # will show default PATH env var without login
+                - glue-custom-entrypoint
+                - glue-default

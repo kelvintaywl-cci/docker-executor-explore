@@ -8,27 +8,26 @@ executors:
     docker:
       - image: rhodeswebdev/cci-drupal-percy:v0.15
 
-jobs:
-  php-check:
-    parameters:
-      exec:
-        type: executor
-    executor: << parameters.exec >>
+commands:
+  check-deps:
     steps:
-      - when:
-          condition:
-            equal: ["linux", << parameters.exec >>]
-          steps:
-            - run: sudo apt update && sudo apt install php php-xml php-mbstring php-gd php-curl
       - run: php --version
       - run: composer --version
+
+jobs:
+  php-check-machine:
+    executor: linux
+    steps:
+      - run: sudo apt update && sudo apt install php php-xml php-mbstring php-gd php-curl
+      - check-deps
+  php-check-docker:
+    executor: dock
+    steps:
+      - check-deps
+
 
 workflows:
   main:
     jobs:
-      - php-check:
-          matrix:
-            parameters:
-              exec:
-                - linux
-                - dock
+      - php-check-machine
+      - php-check-docker

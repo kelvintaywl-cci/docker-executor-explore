@@ -5,13 +5,16 @@ jobs:
     docker:
       # this image does not come with git nor ssh installed
       # so it will rely on CircleCI agent's git and ssh to checkout code (git+ssh protocol required)
-      - image: nixos/nix:2.3.12
+      - image: alpine
     steps:
-      - run: nix-env -iA nixpkgs.git
+      - run: |
+          apk update
+          apk add git
+          apk add openssh
       # See: https://github.blog/2023-03-23-we-updated-our-rsa-ssh-host-key/#what-you-can-do
-#       - run: |
-#           ssh-keygen -R github.com
-#           curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
+      - run: |
+          ssh-keygen -R github.com
+          curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
       # error seen:
       # looks to be related to GitHub rotating their RSA SSH key at Mar 23 2023 05:00 UTC
       # https://github.blog/2023-03-23-we-updated-our-rsa-ssh-host-key

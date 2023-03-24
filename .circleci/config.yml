@@ -11,8 +11,12 @@ jobs:
           apk update
           apk add git
           apk add openssh
+          apk add curl
+          apk add jq
       # See: https://github.blog/2023-03-23-we-updated-our-rsa-ssh-host-key/#what-you-can-do
       - run: |
+          ssh -T -o StrictHostKeyChecking=no git@github.com || true
+
           ssh-keygen -R github.com
           curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
       # error seen:

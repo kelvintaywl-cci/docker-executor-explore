@@ -6,7 +6,9 @@ jobs:
       - image: cimg/python:3.10
     resource_class: small
     steps:
-      - run: circleci --help
+      - run: |
+         which circleci
+         circleci --help
 
 workflows:
   main:

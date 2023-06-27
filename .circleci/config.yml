@@ -2,10 +2,12 @@ version: 2.1
 
 jobs:
   sample:
-    machine:
-      image: ubuntu-2004:2023.04.2
+    docker:
+      - image: cimg/aws:2023.06
     resource_class: medium
     steps:
+      - setup_remote_docker:
+          version: '20.10.18'
       - run: docker info
       - run:
           name: run Docker container (background)

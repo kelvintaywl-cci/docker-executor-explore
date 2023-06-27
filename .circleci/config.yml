@@ -21,20 +21,7 @@ jobs:
       - run:
           name: wait for Docker container
           command: |
-            # alternative:
-            #   dockerize -wait http://127.0.0.1:5050 -timeout 10s
-            N=10
-            while [ $N -gt 0 ]
-            do
-              if [ $(docker ps -f name=nginx | grep nginx) ]; then
-                echo "Container is up!"
-                exit 0
-              fi
-              echo "Container is not up yet; waiting to retry..."
-              N=$(( $N - 1 ))
-              sleep 2
-            done
-            exit 1
+            dockerize -wait http://127.0.0.1:5050 -timeout 10s
       - run:
           name: Inspect files
           command: |

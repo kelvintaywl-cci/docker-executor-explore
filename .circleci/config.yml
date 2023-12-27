@@ -2,6 +2,10 @@ version: 2.1
 
 executors:
   azul-openjdk-21:
+    # NOTE: CRaC is available only on versions 17 & 21 of Azul Zulu builds of OpenJDK.
+    # https://docs.azul.com/core/crac/crac-introduction
+    # Hence, we are using version 21 below (based on Ubuntu OS)
+    # https://docs.azul.com/core/install/docker
     docker:
       - image: docker.io/azul/zulu-openjdk:21
     resource_class: large
@@ -10,8 +14,7 @@ jobs:
   azul:
     executor: azul-openjdk-21
     steps:
-      - run: whoami
-      - run: printenv PATH
+      - run: java -version
 
 workflows:
   main:

@@ -3,7 +3,12 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/base:2021.11
+      # private image on Docker Hub
+      - image: docker.io/kelvintaywl/cimg-node-18:circleci
+        auth:
+          username: kelvintaywl
+          password: $DOCKERHUB_PAT
+           
     resource_class: kelvintaywl-cci/cntr-runner-eks-ap-south-1
     steps:
       - checkout

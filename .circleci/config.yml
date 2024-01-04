@@ -5,10 +5,9 @@ jobs:
     docker:
       # private image on Docker Hub
       - image: docker.io/kelvintaywl/cimg-node-18:circleci
-        auth:
-          username: kelvintaywl
-          password: $DOCKERHUB_PAT
-           
+      # switched to using ImagePullSecrets.
+      # see https://circleci.com/docs/container-runner/#parameters:~:text=runAsNonRoot%3A%20true-,imagePullSecrets,-%3A%0A%20%20%20%20%20%20%20%20%20%20%2D%20name
+      # also https://support.circleci.com/hc/en-us/articles/20665530773403-How-to-use-imagePullSecrets-on-Container-Runner
     resource_class: kelvintaywl-cci/cntr-runner-eks-ap-south-1
     steps:
       - checkout

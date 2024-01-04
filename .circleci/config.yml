@@ -17,4 +17,7 @@ jobs:
 workflows:
   build-workflow:
     jobs:
-      - build
+      - build:
+          name: foobar
+      - build:
+          name: fizzbuzz

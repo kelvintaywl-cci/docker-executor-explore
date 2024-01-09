@@ -23,4 +23,12 @@ jobs:
     resource_class: medium
     parallelism: 11
     steps:
+      - run:
+          name: disable Performance Analyzer
+          command: |
+            # TODO: improve deterministic check that OpenSearch server is ready
+            sleep 10
+            # curl -X POST localhost:9200/_plugins/_performanceanalyzer/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
+            # https://opensearch.org/docs/latest/monitoring-your-cluster/pa/index/#disable-performance-analyzer
+            curl -XPOST localhost:9200/_plugins/_performanceanalyzer/rca/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
       - run: sleep 30

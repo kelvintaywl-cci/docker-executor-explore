@@ -24,11 +24,25 @@ jobs:
     parallelism: 1
     steps:
       - run:
+          name: wait for OpenSearch server to be up
+          command: |
+            N=30
+            while [ $N -gt 0 ]
+            do
+              if $(curl -s -f http://localhost:9200 > /dev/null); then
+                echo "Pinged OpenSearch!"
+                exit 0
+              fi
+              echo "OpenSearch is not reachable; retrying"
+              N=$(( $N - 1 ))
+              sleep 1
+            done
+            exit 1
+      - run:
           name: disable Performance Analyzer
           command: |
             # TODO: improve deterministic check that OpenSearch server is ready
             sleep 30
-            # curl -X POST localhost:9200/_plugins/_performanceanalyzer/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
             # https://opensearch.org/docs/latest/monitoring-your-cluster/pa/index/#disable-performance-analyzer
             curl -XPOST localhost:9200/_plugins/_performanceanalyzer/rca/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
-      - run: sleep 30
+      - run: echo done

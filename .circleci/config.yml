@@ -21,13 +21,13 @@ jobs:
           # See https://opensearch.org/docs/latest/install-and-configure/configuring-opensearch/logs/#application-logs
           - logger.org.opensearch.discovery=DEBUG
     resource_class: medium
-    parallelism: 11
+    parallelism: 1
     steps:
       - run:
           name: disable Performance Analyzer
           command: |
             # TODO: improve deterministic check that OpenSearch server is ready
-            sleep 10
+            sleep 30
             # curl -X POST localhost:9200/_plugins/_performanceanalyzer/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
             # https://opensearch.org/docs/latest/monitoring-your-cluster/pa/index/#disable-performance-analyzer
             curl -XPOST localhost:9200/_plugins/_performanceanalyzer/rca/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'

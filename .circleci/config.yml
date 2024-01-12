@@ -16,9 +16,9 @@ jobs:
 workflows:
   main:
     jobs:
-      diskspace:
-        matrix:
-          parameters:
-            size:
-              - medium
-              - large
+      - diskspace:
+          matrix:
+            parameters:
+              size:
+                - medium
+                - large

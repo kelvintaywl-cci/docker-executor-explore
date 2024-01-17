@@ -20,27 +20,28 @@ jobs:
           - DISABLE_SECURITY_PLUGIN=true
           # See https://opensearch.org/docs/latest/install-and-configure/configuring-opensearch/logs/#application-logs
           - logger.org.opensearch.discovery=DEBUG
+      - image: cimg/mysql:5.7.36
+        environment:
+          TZ: America/Los_Angeles
+          MYSQL_DATABASE: opensearch_test
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_USER: opensearch
+          MYSQL_PASSWORD: openSearchR0X
     resource_class: medium
     parallelism: 1
     steps:
       - run:
-          name: wait for OpenSearch server to be up
+          name: wait for MySQL server to be up (2 mins)
           command: |
-            N=30
-            while [ $N -gt 0 ]
-            do
-              if $(curl -s -f http://localhost:9200 > /dev/null); then
-                echo "Pinged OpenSearch!"
-                exit 0
-              fi
-              echo "OpenSearch is not reachable; retrying"
-              N=$(( $N - 1 ))
-              sleep 1
-            done
-            exit 1
+            dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      - run:
+          name: wait for OpenSearch server to be up (2 mins)
+          command: |
+            dockerize -wait tcp://127.0.0.1:9200 -timeout 120s
       - run:
           name: disable Performance Analyzer
           command: |
             # https://opensearch.org/docs/latest/monitoring-your-cluster/pa/index/#disable-performance-analyzer
-            curl -XPOST localhost:9200/_plugins/_performanceanalyzer/rca/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
+            curl -X POST localhost:9200/_plugins/_performanceanalyzer/rca/cluster/config -H 'Content-Type: application/json' -d '{"enabled": false}'
       - run: echo done

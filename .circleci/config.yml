@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   build:
+    parallelism: 31
     docker:
       - image: cimg/base:current
       - image: opensearchproject/opensearch:1.3.2

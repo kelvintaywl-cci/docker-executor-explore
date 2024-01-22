@@ -13,7 +13,20 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-
+  private-pat:
+    docker:
+      - image: kelvintaywl/cimg-node-18:root
+        auth:
+          username: $DOCKERHUB_USERNAME
+          # using personal access token instead
+          password: $DOCKERHUB_PAT
+  public-pat:
+    docker:
+      - image: cimg/python:3.9
+        auth:
+          username: $DOCKERHUB_USERNAME
+          # using personal access token instead
+          password: $DOCKERHUB_PAT
 jobs:
   test:
     parameters:
@@ -32,3 +45,5 @@ workflows:
               exec:
                 - private
                 - public
+                - private-pat
+                - public-pat

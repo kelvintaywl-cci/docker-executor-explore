@@ -3,7 +3,7 @@ version: 2.1
 executors:
   private:
     docker:
-      - image: kelvintaywl/cimg-node-18
+      - image: kelvintaywl/cimg-node-18:root
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD

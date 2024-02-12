@@ -23,7 +23,7 @@ jobs:
   test1:
     executor:
       name: jdk
-      version: 10
+      version: 21
     steps:
       - run: |
          echo test1

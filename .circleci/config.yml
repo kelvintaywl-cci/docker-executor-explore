@@ -23,7 +23,7 @@ jobs:
   test1:
     executor:
       name: jdk
-      version: 21
+      version: << pipeline.parameters.jdk >>
     steps:
       - run: |
          echo test1

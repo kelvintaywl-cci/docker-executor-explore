@@ -10,7 +10,7 @@ executors:
     parameters:
       version:
         type: integer
-        default: *jdk_default_version
+        default: <<pipeline.parameters.jdk>>
     docker:
       - image: cimg/openjdk:<<parameters.version>>.0-node
     resource_class: small

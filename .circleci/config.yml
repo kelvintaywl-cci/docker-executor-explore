@@ -1,16 +1,35 @@
 version: 2.1
 
+parameters:
+  jdk:
+    type: integer
+    default: &jdk_default_version 11
+
 jobs:
-  circleci-cli:
+  test0:
+    parameters:
+      version:
+        type: integer
+        default: *jdk_default_version
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/openjdk:<<parameters.version>>.0-node
+    resource_class: small
+    steps:
+      - run: echo test0
+  test1:
+    parameters:
+      version:
+        type: integer
+        default: *jdk_default_version
+    docker:
+      - image: cimg/openjdk:<<parameters.version>>
     resource_class: small
     steps:
       - run: |
-         which circleci
-         circleci --help
+         echo test1
 
 workflows:
   main:
     jobs:
-      - circleci-cli
+      - test0
+      - test1

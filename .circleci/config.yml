@@ -1,18 +1,15 @@
 version: 2.1
 
-orbs:
-  gcp: circleci/gcp-cli@3.1.0
-
 jobs:
   install:
     docker:
-      - image: gcr.io/google.com/cloudsdktool/google-cloud-cli:debian_component_based
+      - image: cimg/ruby:2.6.10
     resource_class: medium
     steps:
-      - gcp/install:
-          version: '440.0.0'
+      - run: ruby --version
+      - run: bundler --version
 
 workflows:
-  gcp-cli:
+  ruby:
     jobs:
       - install

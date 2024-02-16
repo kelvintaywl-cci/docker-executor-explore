@@ -11,6 +11,7 @@ jobs:
     parameters:
       exec:
         type: executor
+        default: base
     executor: << parameters.exec >>
     steps:
       - run: echo done

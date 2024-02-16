@@ -8,7 +8,7 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: cimg/redis
+      - image: cimg/redis:6.2.6
 jobs:
   test:
     parameters:

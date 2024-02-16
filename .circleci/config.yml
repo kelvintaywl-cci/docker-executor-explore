@@ -5,6 +5,9 @@ executors:
     docker:
       # private image on DockerHub
       - image: kelvintaywl/cimg-node-18:root
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
       - image: cimg/redis
 jobs:
   test:

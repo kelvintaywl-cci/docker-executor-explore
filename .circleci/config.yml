@@ -1,32 +1,11 @@
 version: 2.1
 
 executors:
-  private:
+  base:
     docker:
+      # private image on DockerHub
       - image: kelvintaywl/cimg-node-18:root
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-  public:
-    docker:
-      - image: cimg/python:3.9
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-  private-pat:
-    docker:
-      - image: kelvintaywl/cimg-node-18:root
-        auth:
-          username: $DOCKERHUB_USERNAME
-          # using personal access token instead
-          password: $DOCKERHUB_PAT
-  public-pat:
-    docker:
-      - image: cimg/python:3.9
-        auth:
-          username: $DOCKERHUB_USERNAME
-          # using personal access token instead
-          password: $DOCKERHUB_PAT
+      - image: cimg/redis
 jobs:
   test:
     parameters:
@@ -40,10 +19,5 @@ workflows:
   main:
     jobs:
       - test:
-          matrix:
-            parameters:
-              exec:
-                - private
-                - public
-                - private-pat
-                - public-pat
+          context:
+            - dockerhub

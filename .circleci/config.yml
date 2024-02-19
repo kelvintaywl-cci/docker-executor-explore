@@ -1,14 +1,21 @@
 version: 2.1
 
+orbs:
+  browser-tools: circleci/browser-tools@1.4.6
+
 jobs:
   inspect:
     docker:
       - image: cimg/ruby:3.1.4-browsers
     resource_class: small
     steps:
-      - run: which chromedriver
-      - run: which msedgedriver
-
+      - run: which chromedriver || echo "no chromedriver found!"
+      - run: which msedgedriver || echo "no msedgedriver found!"
+      - browser-tools/install-browser-tools
+      # should now show chromedriver available
+      - run: which chromedriver || echo "no chromedriver found!"
+      # should still show no msedgedriver
+      - run: which msedgedriver || echo "no msedgedriver found!"
 workflows:
   ruby:
     jobs:

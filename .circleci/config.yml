@@ -12,6 +12,7 @@ jobs:
     steps:
       - checkout
       - run: echo "Hi I'm on Runners!"
+      - run: sleep 300
 
 workflows:
   build-workflow:

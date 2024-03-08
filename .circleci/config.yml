@@ -9,6 +9,8 @@ executors:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
       - image: cimg/redis:6.2.6
+    # container runner
+    resource_class: kelvintaywl-cci/cntr-runner-eks-ap-south-1
 jobs:
   test:
     parameters:

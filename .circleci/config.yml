@@ -4,7 +4,7 @@ executors:
   base:
     docker:
       # private image on DockerHub
-      - image: kelvintaywl/cimg-node-18:root
+      - image: kelvintaywl/cimg-node-18:python
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
